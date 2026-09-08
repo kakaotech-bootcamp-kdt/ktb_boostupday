@@ -1,1 +1,1 @@
-# ktb_boostupday
+# kakao_tech_bootcamp_bell

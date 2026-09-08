@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSAFY X KAKAO TECH BOOTCAMP AI HACKATHON</title>
+
+<style>
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    text-align: center;
+    font-family: 'Arial Black', 'Trebuchet MS', sans-serif;
+
+    text-shadow:
+        2px 2px 8px rgba(0,0,0,0.8),
+        0 0 20px rgba(0,0,0,0.6);
+}
+
+/* 배경 */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image: url('일반 배경화면 중심 중앙.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    filter: blur(0px);
+    transform: scale(1.1);
+
+    z-index: -2;
+}
+
+/* 어두운 오버레이 */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    z-index: -1;
+}
+
+.title {
+    font-size: 4rem;
+    font-weight: bold;
+    color: white;
+    line-height: 1.1;
+}
+
+.title:last-of-type {
+    margin-bottom: 30px; /* 날짜와 간격 */
+}
+
+#date {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+#time {
+    font-size: 7rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+#countdown {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+
+    .title {
+        font-size: 2.5rem;
+    }
+
+    #date {
+        font-size: 1.5rem;
+    }
+
+    #time {
+        font-size: 3rem;
+    }
+
+    #countdown {
+        font-size: 2rem;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="title">SSAFY X KAKAO TECH BOOTCAMP</div>
+<div class="title">AI HACKATHON</div>
+
+<div id="date"></div>
+
+<div id="time">00:00:00</div>
+
+<div id="countdown">D-0 00:00:00</div>
+
+<script>
+
+// 2026년 6월 14일 오전 8시 20분
+const targetDate = new Date(2026, 5, 14, 8, 20, 0);
+
+function updateClock() {
+
+    const now = new Date();
+
+    // 현재 날짜
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+
+    document.getElementById("date").innerText =
+        `${year}.${month}.${day}`;
+
+    // 현재 시간
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    document.getElementById("time").innerText =
+        `${hours}:${minutes}:${seconds}`;
+
+    // 남은 시간 계산
+    const diff = targetDate.getTime() - now.getTime();
+
+    if (diff <= 0) {
+        document.getElementById("countdown").innerText =
+            "🎉 SSAFY X KAKAO TECH BOOTCAMP AI HACKATHON 시작!";
+        return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    const remainHours = Math.floor(
+        (diff % (1000 * 60 * 60 * 24)) /
+        (1000 * 60 * 60)
+    );
+
+    const remainMinutes = Math.floor(
+        (diff % (1000 * 60 * 60)) /
+        (1000 * 60)
+    );
+
+    const remainSeconds = Math.floor(
+        (diff % (1000 * 60)) /
+        1000
+    );
+
+    document.getElementById("countdown").innerText =
+        `D-${days} ${String(remainHours).padStart(2, '0')}:${String(remainMinutes).padStart(2, '0')}:${String(remainSeconds).padStart(2, '0')}`;
+}
+
+// 즉시 실행
+updateClock();
+
+// 1초마다 갱신
+setInterval(updateClock, 1000);
+
+</script>
+
+</body>
+</html>
