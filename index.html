@@ -1,9 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSAFY X KAKAO TECH BOOTCAMP AI HACKATHON</title>
+
+<title>KTB BOOST UP DAY</title>
 
 <style>
 
@@ -17,13 +19,13 @@ body {
     justify-content: center;
     align-items: center;
 
-    color: white;
+    color: #0054A5;
     text-align: center;
     font-family: 'Arial Black', 'Trebuchet MS', sans-serif;
 
     text-shadow:
-        2px 2px 8px rgba(0,0,0,0.8),
-        0 0 20px rgba(0,0,0,0.6);
+        2px 2px 8px rgba(255,255,255,0.8),
+        0 0 20px rgba(255,255,255,0.6);
 }
 
 /* 배경 */
@@ -32,7 +34,7 @@ body::before {
     position: fixed;
     inset: 0;
 
-    background-image: url('일반 배경화면 중심 중앙.png');
+    background-image: url('Group 4.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -43,13 +45,13 @@ body::before {
     z-index: -2;
 }
 
-/* 어두운 오버레이 */
+/* 밝은 오버레이 */
 body::after {
     content: "";
     position: fixed;
     inset: 0;
 
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(255, 255, 255, 0.15);
 
     z-index: -1;
 }
@@ -57,28 +59,18 @@ body::after {
 .title {
     font-size: 4rem;
     font-weight: bold;
-    color: white;
+    color: #0054A5;
     line-height: 1.1;
 }
 
 .title:last-of-type {
-    margin-bottom: 30px; /* 날짜와 간격 */
-}
-
-#date {
-    font-size: 3rem;
-    margin-bottom: 10px;
-}
-
-#time {
-    font-size: 7rem;
-    font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
 }
 
 #countdown {
-    font-size: 3rem;
+    font-size: 7rem;
     font-weight: bold;
+    color: #0054A5;
 }
 
 @media (max-width: 768px) {
@@ -87,17 +79,10 @@ body::after {
         font-size: 2.5rem;
     }
 
-    #date {
-        font-size: 1.5rem;
-    }
-
-    #time {
+    #countdown {
         font-size: 3rem;
     }
 
-    #countdown {
-        font-size: 2rem;
-    }
 }
 
 </style>
@@ -105,77 +90,167 @@ body::after {
 
 <body>
 
-<div class="title">SSAFY X KAKAO TECH BOOTCAMP</div>
-<div class="title">AI HACKATHON</div>
+<div class="title">KTB BOOST UP DAY</div>
+<div class="title">BOOSTER TALK</div>
 
-<div id="date"></div>
-
-<div id="time">00:00:00</div>
-
-<div id="countdown">D-0 00:00:00</div>
+<div id="countdown">00:00:00</div>
 
 <script>
 
-// 2026년 6월 14일 오전 8시 20분
-const targetDate = new Date(2026, 5, 14, 8, 20, 0);
+/*
+ * BOOSTER TALK 진행 시간
+ *
+ * 1부 : 16:30 ~ 17:20
+ * 2부 : 17:40 ~ 18:30
+ *
+ * 현재 시간 기준으로
+ * - 시작 전 → 다음 부 시작까지 카운트다운
+ * - 진행 중 → "1부" 또는 "2부"
+ * - 종료 후 → 종료 메시지
+ */
 
-function updateClock() {
+const firstPartStart = { hour: 16, minute: 30 };
+const firstPartEnd   = { hour: 17, minute: 20 };
+
+const secondPartStart = { hour: 17, minute: 40 };
+const secondPartEnd   = { hour: 18, minute: 30 };
+
+
+function updateCountdown() {
 
     const now = new Date();
 
-    // 현재 날짜
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
+    // 오늘 날짜 기준으로 각 시간 생성
+    const firstStart = new Date(now);
+    firstStart.setHours(
+        firstPartStart.hour,
+        firstPartStart.minute,
+        0,
+        0
+    );
 
-    document.getElementById("date").innerText =
-        `${year}.${month}.${day}`;
+    const firstEnd = new Date(now);
+    firstEnd.setHours(
+        firstPartEnd.hour,
+        firstPartEnd.minute,
+        0,
+        0
+    );
 
-    // 현재 시간
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const secondStart = new Date(now);
+    secondStart.setHours(
+        secondPartStart.hour,
+        secondPartStart.minute,
+        0,
+        0
+    );
 
-    document.getElementById("time").innerText =
-        `${hours}:${minutes}:${seconds}`;
+    const secondEnd = new Date(now);
+    secondEnd.setHours(
+        secondPartEnd.hour,
+        secondPartEnd.minute,
+        0,
+        0
+    );
 
-    // 남은 시간 계산
-    const diff = targetDate.getTime() - now.getTime();
 
-    if (diff <= 0) {
+    /*
+     * 1부 시작 전
+     * → 1부 시작까지 카운트다운
+     */
+    if (now < firstStart) {
+
+        const diff = firstStart - now;
+
         document.getElementById("countdown").innerText =
-            "🎉 SSAFY X KAKAO TECH BOOTCAMP AI HACKATHON 시작!";
+            formatTime(diff);
+
         return;
     }
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-    const remainHours = Math.floor(
-        (diff % (1000 * 60 * 60 * 24)) /
-        (1000 * 60 * 60)
-    );
+    /*
+     * 1부 진행 중
+     */
+    if (now >= firstStart && now < firstEnd) {
 
-    const remainMinutes = Math.floor(
-        (diff % (1000 * 60 * 60)) /
-        (1000 * 60)
-    );
+        document.getElementById("countdown").innerText =
+            "1부";
 
-    const remainSeconds = Math.floor(
-        (diff % (1000 * 60)) /
-        1000
-    );
+        return;
+    }
 
+
+    /*
+     * 1부 종료 ~ 2부 시작 전
+     * → 2부 시작까지 카운트다운
+     */
+    if (now >= firstEnd && now < secondStart) {
+
+        const diff = secondStart - now;
+
+        document.getElementById("countdown").innerText =
+            formatTime(diff);
+
+        return;
+    }
+
+
+    /*
+     * 2부 진행 중
+     */
+    if (now >= secondStart && now < secondEnd) {
+
+        document.getElementById("countdown").innerText =
+            "2부";
+
+        return;
+    }
+
+
+    /*
+     * 2부 종료
+     */
     document.getElementById("countdown").innerText =
-        `D-${days} ${String(remainHours).padStart(2, '0')}:${String(remainMinutes).padStart(2, '0')}:${String(remainSeconds).padStart(2, '0')}`;
+        "BOOSTER TALK 종료";
 }
 
-// 즉시 실행
-updateClock();
 
-// 1초마다 갱신
-setInterval(updateClock, 1000);
+/*
+ * 밀리초를
+ * HH:MM:SS 형태로 변환
+ */
+function formatTime(diff) {
+
+    const totalSeconds = Math.floor(diff / 1000);
+
+    const hours = Math.floor(totalSeconds / 3600);
+
+    const minutes = Math.floor(
+        (totalSeconds % 3600) / 60
+    );
+
+    const seconds = totalSeconds % 60;
+
+    return `${String(hours).padStart(2, '0')}:` +
+           `${String(minutes).padStart(2, '0')}:` +
+           `${String(seconds).padStart(2, '0')}`;
+}
+
+
+/*
+ * 페이지가 열리자마자 실행
+ */
+updateCountdown();
+
+
+/*
+ * 1초마다 카운트다운 갱신
+ */
+setInterval(updateCountdown, 1000);
 
 </script>
 
 </body>
 </html>
+```
