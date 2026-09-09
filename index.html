@@ -143,7 +143,7 @@ body::after {
 
 
 /* ==========================================
-   SESSION 01
+   SESSION 1
    ========================================== */
 
 const firstPartStart = {
@@ -158,12 +158,12 @@ const firstPartEnd = {
 
 
 /* ==========================================
-   SESSION 02
+   SESSION 2
    ========================================== */
 
 const secondPartStart = {
     hour: 23,
-    minute: 40
+    minute: 55
 };
 
 const secondPartEnd = {
@@ -266,7 +266,7 @@ function updateCountdown() {
 
 
     /* ==========================================
-       SESSION 01 시작 전
+       SESSION 1 시작 전
        ========================================== */
 
     if (currentMinutes < firstStart) {
@@ -277,7 +277,7 @@ function updateCountdown() {
 
 
         partElement.innerText =
-            "SESSION 01";
+            "SESSION 1";
 
 
         countdownElement.innerText =
@@ -290,7 +290,7 @@ function updateCountdown() {
 
 
     /* ==========================================
-       SESSION 01 진행 중
+       SESSION 1 진행 중
        ========================================== */
 
     if (
@@ -299,7 +299,7 @@ function updateCountdown() {
     ) {
 
         partElement.innerText =
-            "SESSION 01";
+            "SESSION 1";
 
 
         countdownElement.innerText =
@@ -313,7 +313,7 @@ function updateCountdown() {
 
     /* ==========================================
        BREAK
-       SESSION 01 종료 ~ SESSION 02 시작 전
+       SESSION 1 종료 ~ SESSION 2 시작 전
        ========================================== */
 
     if (
@@ -340,7 +340,7 @@ function updateCountdown() {
 
 
     /* ==========================================
-       SESSION 02 진행 중
+       SESSION 2 진행 중
        ========================================== */
 
     if (
@@ -349,7 +349,7 @@ function updateCountdown() {
     ) {
 
         partElement.innerText =
-            "SESSION 02";
+            "SESSION 2";
 
 
         countdownElement.innerText =
