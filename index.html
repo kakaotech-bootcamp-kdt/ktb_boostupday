@@ -34,12 +34,17 @@ body::before {
     inset: 0;
 
     background-image: url('Group 4.png');
-    background-size: cover;
+
+    /* 이미지 전체가 보이도록 설정 */
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
 
-    filter: blur(0px);
-    transform: scale(1.1);
+    /* 이미지 확대 제거 */
+    transform: none;
+
+    /* 이미지 주변 빈 공간은 흰색 */
+    background-color: white;
 
     z-index: -2;
 }
@@ -126,12 +131,6 @@ const secondPartEnd = {
 
 /*
  * 현재 시간을 분 단위로 변환
- *
- * 예:
- * 22:30 → 1350
- * 23:20 → 1400
- * 23:40 → 1420
- * 00:30 → 30
  */
 function getCurrentMinutes() {
 
@@ -190,12 +189,6 @@ function updateCountdown() {
         now.getSeconds();
 
 
-    /*
-     * ==========================================
-     * 시간 설정
-     * ==========================================
-     */
-
     const firstStart =
         getMinutes(
             firstPartStart.hour,
@@ -222,15 +215,8 @@ function updateCountdown() {
 
 
     /*
-     * ==========================================
      * 1부 시작 전
-     * ==========================================
-     *
-     * 22:30 전
-     * → 1부 시작까지 남은 시간
-     *
      */
-
     if (currentMinutes < firstStart) {
 
         const diffSeconds =
@@ -245,13 +231,8 @@ function updateCountdown() {
 
 
     /*
-     * ==========================================
      * 1부 진행 중
-     * ==========================================
-     *
-     * 22:30 ~ 23:20
      */
-
     if (
         currentMinutes >= firstStart &&
         currentMinutes < firstEnd
@@ -265,14 +246,8 @@ function updateCountdown() {
 
 
     /*
-     * ==========================================
      * 1부 종료 ~ 2부 시작 전
-     * ==========================================
-     *
-     * 23:20 ~ 23:40
-     * → 2부 시작까지 남은 시간
      */
-
     if (
         currentMinutes >= firstEnd &&
         currentMinutes < secondStart
@@ -290,13 +265,8 @@ function updateCountdown() {
 
 
     /*
-     * ==========================================
      * 2부 진행 중
-     * ==========================================
-     *
-     * 23:40 ~ 00:30
      */
-
     if (
         currentMinutes >= secondStart ||
         currentMinutes < secondEnd
@@ -310,13 +280,8 @@ function updateCountdown() {
 
 
     /*
-     * ==========================================
      * 그 외 시간
-     * ==========================================
-     *
-     * 00:30 이후 ~ 22:30 이전
      */
-
     document.getElementById("countdown").innerText =
         "00:00:00";
 }
