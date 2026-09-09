@@ -95,7 +95,7 @@ body::after {
 <div class="title">KTB BOOST UP DAY</div>
 <div class="title">BOOSTER TALK</div>
 
-<div id="countdown">D-0 00:00:00</div>
+<div id="countdown">00:00:00</div>
 
 <script>
 
@@ -104,36 +104,88 @@ body::after {
  * BOOSTER TALK 일정
  * ==========================================
  *
- * 행사일 : 2026년 9월 11일
+ * 1부 : 22:30 ~ 23:20
+ * 2부 : 23:40 ~ 00:30
  *
- * 1부 : 16:30 ~ 17:20
- * 2부 : 17:40 ~ 18:30
+ * 날짜는 사용하지 않고
+ * 현재 시간만 기준으로 동작합니다.
  *
  */
 
-// 나중에 여기 날짜랑 시간을 수정하기*********
-/* 행사 날짜 */
-const eventDate = "2026-09-09";
-
 
 /* 1부 */
-const firstPartStart = new Date(
-    `${eventDate}T22:30:00`
-);
+const firstPartStart = {
+    hour: 22,
+    minute: 30
+};
 
-const firstPartEnd = new Date(
-    `${eventDate}T23:20:00`
-);
+const firstPartEnd = {
+    hour: 23,
+    minute: 20
+};
 
 
 /* 2부 */
-const secondPartStart = new Date(
-    `${eventDate}T23:40:00`
-);
+const secondPartStart = {
+    hour: 23,
+    minute: 40
+};
 
-const secondPartEnd = new Date(
-    `${eventDate}T24:30:00`
-);
+const secondPartEnd = {
+    hour: 0,
+    minute: 30
+};
+
+
+/*
+ * 현재 시간을 분 단위로 변환
+ *
+ * 예:
+ * 22:30 → 1350
+ * 23:20 → 1400
+ * 23:40 → 1420
+ * 00:30 → 30
+ */
+function getCurrentMinutes() {
+
+    const now = new Date();
+
+    return (
+        now.getHours() * 60 +
+        now.getMinutes()
+    );
+}
+
+
+/*
+ * 시간을 분 단위로 변환
+ */
+function getMinutes(hour, minute) {
+
+    return hour * 60 + minute;
+}
+
+
+/*
+ * 카운트다운 표시
+ */
+function formatTime(totalSeconds) {
+
+    const hours = Math.floor(
+        totalSeconds / 3600
+    );
+
+    const minutes = Math.floor(
+        (totalSeconds % 3600) / 60
+    );
+
+    const seconds = totalSeconds % 60;
+
+
+    return `${String(hours).padStart(2, '0')}:` +
+           `${String(minutes).padStart(2, '0')}:` +
+           `${String(seconds).padStart(2, '0')}`;
+}
 
 
 /*
@@ -143,25 +195,63 @@ function updateCountdown() {
 
     const now = new Date();
 
+    const currentMinutes =
+        now.getHours() * 60 +
+        now.getMinutes();
+
+    const currentSeconds =
+        now.getSeconds();
+
 
     /*
      * ==========================================
-     * 행사일 이전
+     * 시간 설정
+     * ==========================================
+     */
+
+    const firstStart =
+        getMinutes(
+            firstPartStart.hour,
+            firstPartStart.minute
+        );
+
+    const firstEnd =
+        getMinutes(
+            firstPartEnd.hour,
+            firstPartEnd.minute
+        );
+
+    const secondStart =
+        getMinutes(
+            secondPartStart.hour,
+            secondPartStart.minute
+        );
+
+    const secondEnd =
+        getMinutes(
+            secondPartEnd.hour,
+            secondPartEnd.minute
+        );
+
+
+    /*
+     * ==========================================
+     * 1부 시작 전
      * ==========================================
      *
-     * 1부 시작까지 남은 시간을 표시
-     *
-     * 예:
-     * D-1 19:30:00
-     * D-0 01:30:00
+     * 22:30 전
+     * → 1부 시작까지 남은 시간
      *
      */
-    if (now < firstPartStart) {
 
-        const diff = firstPartStart - now;
+    if (currentMinutes < firstStart) {
+
+        const diffSeconds =
+            (firstStart - currentMinutes) * 60
+            - currentSeconds;
 
         document.getElementById("countdown").innerText =
-            formatCountdown(diff);
+            formatTime(diffSeconds);
 
         return;
     }
@@ -171,10 +261,13 @@ function updateCountdown() {
      * ==========================================
      * 1부 진행 중
      * ==========================================
+     *
+     * 22:30 ~ 23:20
      */
+
     if (
-        now >= firstPartStart &&
-        now < firstPartEnd
+        currentMinutes >= firstStart &&
+        currentMinutes < firstEnd
     ) {
 
         document.getElementById("countdown").innerText =
@@ -189,17 +282,21 @@ function updateCountdown() {
      * 1부 종료 ~ 2부 시작 전
      * ==========================================
      *
-     * 2부 시작까지 카운트다운
+     * 23:20 ~ 23:40
+     * → 2부 시작까지 남은 시간
      */
+
     if (
-        now >= firstPartEnd &&
-        now < secondPartStart
+        currentMinutes >= firstEnd &&
+        currentMinutes < secondStart
     ) {
 
-        const diff = secondPartStart - now;
+        const diffSeconds =
+            (secondStart - currentMinutes) * 60
+            - currentSeconds;
 
         document.getElementById("countdown").innerText =
-            formatCountdown(diff);
+            formatTime(diffSeconds);
 
         return;
     }
@@ -209,10 +306,13 @@ function updateCountdown() {
      * ==========================================
      * 2부 진행 중
      * ==========================================
+     *
+     * 23:40 ~ 00:30
      */
+
     if (
-        now >= secondPartStart &&
-        now < secondPartEnd
+        currentMinutes >= secondStart ||
+        currentMinutes < secondEnd
     ) {
 
         document.getElementById("countdown").innerText =
@@ -224,59 +324,14 @@ function updateCountdown() {
 
     /*
      * ==========================================
-     * 행사 종료
+     * 그 외 시간
      * ==========================================
+     *
+     * 00:30 이후 ~ 22:30 이전
      */
-    if (now >= secondPartEnd) {
 
-        document.getElementById("countdown").innerText =
-            "BOOSTER TALK 종료";
-
-        return;
-    }
-
-}
-
-
-/*
- * ==========================================
- * 카운트다운 시간 변환
- * ==========================================
- *
- * D-일수 HH:MM:SS
- *
- */
-function formatCountdown(diff) {
-
-    const totalSeconds = Math.floor(diff / 1000);
-
-
-    /* 남은 일수 */
-    const days = Math.floor(
-        totalSeconds / (24 * 60 * 60)
-    );
-
-
-    /* 남은 시간 */
-    const hours = Math.floor(
-        (totalSeconds % (24 * 60 * 60)) / 3600
-    );
-
-
-    /* 남은 분 */
-    const minutes = Math.floor(
-        (totalSeconds % 3600) / 60
-    );
-
-
-    /* 남은 초 */
-    const seconds = totalSeconds % 60;
-
-
-    return `D-${days} ` +
-           `${String(hours).padStart(2, '0')}:` +
-           `${String(minutes).padStart(2, '0')}:` +
-           `${String(seconds).padStart(2, '0')}`;
+    document.getElementById("countdown").innerText =
+        "00:00:00";
 }
 
 
