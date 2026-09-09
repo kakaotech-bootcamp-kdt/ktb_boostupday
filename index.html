@@ -132,9 +132,9 @@ body::after {
  * BOOSTER TALK 일정
  * ==========================================
  *
- * SESSION 01 : 22:30 ~ 23:20
- * BREAK      : 23:20 ~ 23:40
- * SESSION 02 : 23:40 ~ 00:30
+ * SESSION 1 : 21:30 ~ 21:50
+ * BREAK     : 21:50 ~ 21:55
+ * SESSION 2 : 21:55 ~ 22:30
  *
  * 날짜는 사용하지 않고
  * 현재 시간만 기준으로 동작합니다.
@@ -153,7 +153,7 @@ const firstPartStart = {
 
 const firstPartEnd = {
     hour: 21,
-    minute: 20
+    minute: 50
 };
 
 
@@ -291,6 +291,7 @@ function updateCountdown() {
 
     /* ==========================================
        SESSION 1 진행 중
+       → SESSION 1 종료까지 카운트다운
        ========================================== */
 
     if (
@@ -298,12 +299,17 @@ function updateCountdown() {
         currentMinutes < firstEnd
     ) {
 
+        const diffSeconds =
+            (firstEnd - currentMinutes) * 60
+            - currentSeconds;
+
+
         partElement.innerText =
             "SESSION 1";
 
 
         countdownElement.innerText =
-            "진행 중";
+            formatTime(diffSeconds);
 
 
         return;
@@ -341,19 +347,25 @@ function updateCountdown() {
 
     /* ==========================================
        SESSION 2 진행 중
+       → SESSION 2 종료까지 카운트다운
        ========================================== */
 
     if (
-        currentMinutes >= secondStart ||
+        currentMinutes >= secondStart &&
         currentMinutes < secondEnd
     ) {
+
+        const diffSeconds =
+            (secondEnd - currentMinutes) * 60
+            - currentSeconds;
+
 
         partElement.innerText =
             "SESSION 2";
 
 
         countdownElement.innerText =
-            "진행 중";
+            formatTime(diffSeconds);
 
 
         return;
@@ -362,7 +374,7 @@ function updateCountdown() {
 
 
     /* ==========================================
-       그 외 시간
+       SESSION 2 종료 후
        ========================================== */
 
     partElement.innerText = "";
