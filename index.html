@@ -27,6 +27,7 @@ body {
         0 0 20px rgba(255,255,255,0.6);
 }
 
+
 /* 배경 */
 body::before {
     content: "";
@@ -35,19 +36,18 @@ body::before {
 
     background-image: url('Group 4.png');
 
-    /* 이미지 전체가 보이도록 설정 */
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
 
-    /* 이미지 확대 제거 */
     transform: none;
 
     /* 이미지 주변 빈 공간은 검정색 */
-    background-color: BLACK;
+    background-color: black;
 
     z-index: -2;
 }
+
 
 /* 밝은 오버레이 */
 body::after {
@@ -60,6 +60,7 @@ body::after {
     z-index: -1;
 }
 
+
 /* 제목 */
 .title {
     font-size: 5rem;
@@ -69,8 +70,19 @@ body::after {
 }
 
 .title:last-of-type {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 }
+
+
+/* 1부 / 2부 표시 */
+#part {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #0054A5;
+
+    margin-bottom: 10px;
+}
+
 
 /* 카운트다운 */
 #countdown {
@@ -87,7 +99,12 @@ body::after {
 <div class="title">KTB BOOST UP DAY</div>
 <div class="title">BOOSTER TALK</div>
 
+<!-- 1부 / 2부 표시 -->
+<div id="part"></div>
+
+<!-- 카운트다운 -->
 <div id="countdown">00:00:00</div>
+
 
 <script>
 
@@ -130,24 +147,9 @@ const secondPartEnd = {
 
 
 /*
- * 현재 시간을 분 단위로 변환
- */
-function getCurrentMinutes() {
-
-    const now = new Date();
-
-    return (
-        now.getHours() * 60 +
-        now.getMinutes()
-    );
-}
-
-
-/*
  * 시간을 분 단위로 변환
  */
 function getMinutes(hour, minute) {
-
     return hour * 60 + minute;
 }
 
@@ -166,7 +168,6 @@ function formatTime(totalSeconds) {
     );
 
     const seconds = totalSeconds % 60;
-
 
     return `${String(hours).padStart(2, '0')}:` +
            `${String(minutes).padStart(2, '0')}:` +
@@ -214,8 +215,17 @@ function updateCountdown() {
         );
 
 
+    const partElement =
+        document.getElementById("part");
+
+    const countdownElement =
+        document.getElementById("countdown");
+
+
     /*
+     * ==========================
      * 1부 시작 전
+     * ==========================
      */
     if (currentMinutes < firstStart) {
 
@@ -223,7 +233,9 @@ function updateCountdown() {
             (firstStart - currentMinutes) * 60
             - currentSeconds;
 
-        document.getElementById("countdown").innerText =
+        partElement.innerText = "1부";
+
+        countdownElement.innerText =
             formatTime(diffSeconds);
 
         return;
@@ -231,22 +243,28 @@ function updateCountdown() {
 
 
     /*
+     * ==========================
      * 1부 진행 중
+     * ==========================
      */
     if (
         currentMinutes >= firstStart &&
         currentMinutes < firstEnd
     ) {
 
-        document.getElementById("countdown").innerText =
-            "1부";
+        partElement.innerText = "1부";
+
+        countdownElement.innerText =
+            "진행 중";
 
         return;
     }
 
 
     /*
+     * ==========================
      * 1부 종료 ~ 2부 시작 전
+     * ==========================
      */
     if (
         currentMinutes >= firstEnd &&
@@ -257,7 +275,9 @@ function updateCountdown() {
             (secondStart - currentMinutes) * 60
             - currentSeconds;
 
-        document.getElementById("countdown").innerText =
+        partElement.innerText = "2부";
+
+        countdownElement.innerText =
             formatTime(diffSeconds);
 
         return;
@@ -265,24 +285,32 @@ function updateCountdown() {
 
 
     /*
+     * ==========================
      * 2부 진행 중
+     * ==========================
      */
     if (
         currentMinutes >= secondStart ||
         currentMinutes < secondEnd
     ) {
 
-        document.getElementById("countdown").innerText =
-            "2부";
+        partElement.innerText = "2부";
+
+        countdownElement.innerText =
+            "진행 중";
 
         return;
     }
 
 
     /*
+     * ==========================
      * 그 외 시간
+     * ==========================
      */
-    document.getElementById("countdown").innerText =
+    partElement.innerText = "";
+
+    countdownElement.innerText =
         "00:00:00";
 }
 
