@@ -28,7 +28,10 @@ body {
 }
 
 
-/* 배경 */
+/* ==========================================
+   배경
+   ========================================== */
+
 body::before {
     content: "";
     position: fixed;
@@ -36,10 +39,12 @@ body::before {
 
     background-image: url('Group 4.png');
 
+    /* 이미지 전체가 보이도록 설정 */
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
 
+    /* 이미지 확대 제거 */
     transform: none;
 
     /* 이미지 주변 빈 공간은 검정색 */
@@ -61,7 +66,10 @@ body::after {
 }
 
 
-/* 제목 */
+/* ==========================================
+   제목
+   ========================================== */
+
 .title {
     font-size: 5rem;
     font-weight: bold;
@@ -70,21 +78,31 @@ body::after {
 }
 
 .title:last-of-type {
-    margin-bottom: 30px;
+    margin-bottom: 0;
 }
 
 
-/* 1부 / 2부 표시 */
+/* ==========================================
+   SESSION 표시
+   ========================================== */
+
 #part {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: bold;
     color: #0054A5;
 
-    margin-bottom: 10px;
+    /* 제목과의 간격 */
+    margin-top: 55px;
+
+    /* 카운트다운과의 간격 */
+    margin-bottom: 55px;
 }
 
 
-/* 카운트다운 */
+/* ==========================================
+   카운트다운
+   ========================================== */
+
 #countdown {
     font-size: 8rem;
     font-weight: bold;
@@ -94,12 +112,13 @@ body::after {
 </style>
 </head>
 
+
 <body>
 
 <div class="title">KTB BOOST UP DAY</div>
 <div class="title">BOOSTER TALK</div>
 
-<!-- 1부 / 2부 표시 -->
+<!-- SESSION 표시 -->
 <div id="part"></div>
 
 <!-- 카운트다운 -->
@@ -113,8 +132,8 @@ body::after {
  * BOOSTER TALK 일정
  * ==========================================
  *
- * 1부 : 22:30 ~ 23:20
- * 2부 : 23:40 ~ 00:30
+ * SESSION 01 : 22:30 ~ 23:20
+ * SESSION 02 : 23:40 ~ 00:30
  *
  * 날짜는 사용하지 않고
  * 현재 시간만 기준으로 동작합니다.
@@ -122,7 +141,10 @@ body::after {
  */
 
 
-/* 1부 */
+/* ==========================================
+   SESSION 01
+   ========================================== */
+
 const firstPartStart = {
     hour: 22,
     minute: 30
@@ -134,7 +156,10 @@ const firstPartEnd = {
 };
 
 
-/* 2부 */
+/* ==========================================
+   SESSION 02
+   ========================================== */
+
 const secondPartStart = {
     hour: 23,
     minute: 40
@@ -146,17 +171,21 @@ const secondPartEnd = {
 };
 
 
-/*
- * 시간을 분 단위로 변환
- */
+/* ==========================================
+   시간을 분 단위로 변환
+   ========================================== */
+
 function getMinutes(hour, minute) {
+
     return hour * 60 + minute;
+
 }
 
 
-/*
- * 카운트다운 표시
- */
+/* ==========================================
+   카운트다운 표시 형식
+   ========================================== */
+
 function formatTime(totalSeconds) {
 
     const hours = Math.floor(
@@ -169,26 +198,33 @@ function formatTime(totalSeconds) {
 
     const seconds = totalSeconds % 60;
 
+
     return `${String(hours).padStart(2, '0')}:` +
            `${String(minutes).padStart(2, '0')}:` +
            `${String(seconds).padStart(2, '0')}`;
+
 }
 
 
-/*
- * 카운트다운 업데이트
- */
+/* ==========================================
+   카운트다운 업데이트
+   ========================================== */
+
 function updateCountdown() {
 
     const now = new Date();
+
 
     const currentMinutes =
         now.getHours() * 60 +
         now.getMinutes();
 
+
     const currentSeconds =
         now.getSeconds();
 
+
+    /* SESSION 시간 */
 
     const firstStart =
         getMinutes(
@@ -196,17 +232,20 @@ function updateCountdown() {
             firstPartStart.minute
         );
 
+
     const firstEnd =
         getMinutes(
             firstPartEnd.hour,
             firstPartEnd.minute
         );
 
+
     const secondStart =
         getMinutes(
             secondPartStart.hour,
             secondPartStart.minute
         );
+
 
     const secondEnd =
         getMinutes(
@@ -215,57 +254,67 @@ function updateCountdown() {
         );
 
 
+    /* 화면 요소 */
+
     const partElement =
         document.getElementById("part");
+
 
     const countdownElement =
         document.getElementById("countdown");
 
 
-    /*
-     * ==========================
-     * 1부 시작 전
-     * ==========================
-     */
+    /* ==========================================
+       SESSION 01 시작 전
+       ========================================== */
+
     if (currentMinutes < firstStart) {
 
         const diffSeconds =
             (firstStart - currentMinutes) * 60
             - currentSeconds;
 
-        partElement.innerText = "1부";
+
+        partElement.innerText =
+            "SESSION 01";
+
 
         countdownElement.innerText =
             formatTime(diffSeconds);
 
+
         return;
+
     }
 
 
-    /*
-     * ==========================
-     * 1부 진행 중
-     * ==========================
-     */
+    /* ==========================================
+       SESSION 01 진행 중
+       ========================================== */
+
     if (
         currentMinutes >= firstStart &&
         currentMinutes < firstEnd
     ) {
 
-        partElement.innerText = "1부";
+        partElement.innerText =
+            "SESSION 01";
+
 
         countdownElement.innerText =
             "진행 중";
 
+
         return;
+
     }
 
 
-    /*
-     * ==========================
-     * 1부 종료 ~ 2부 시작 전
-     * ==========================
-     */
+    /* ==========================================
+       SESSION 01 종료
+       ~ SESSION 02 시작 전
+       ========================================== */
+
     if (
         currentMinutes >= firstEnd &&
         currentMinutes < secondStart
@@ -275,55 +324,65 @@ function updateCountdown() {
             (secondStart - currentMinutes) * 60
             - currentSeconds;
 
-        partElement.innerText = "2부";
+
+        partElement.innerText =
+            "SESSION 02";
+
 
         countdownElement.innerText =
             formatTime(diffSeconds);
 
+
         return;
+
     }
 
 
-    /*
-     * ==========================
-     * 2부 진행 중
-     * ==========================
-     */
+    /* ==========================================
+       SESSION 02 진행 중
+       ========================================== */
+
     if (
         currentMinutes >= secondStart ||
         currentMinutes < secondEnd
     ) {
 
-        partElement.innerText = "2부";
+        partElement.innerText =
+            "SESSION 02";
+
 
         countdownElement.innerText =
             "진행 중";
 
+
         return;
+
     }
 
 
-    /*
-     * ==========================
-     * 그 외 시간
-     * ==========================
-     */
+    /* ==========================================
+       그 외 시간
+       ========================================== */
+
     partElement.innerText = "";
 
     countdownElement.innerText =
         "00:00:00";
+
 }
 
 
-/*
- * 페이지가 열리자마자 실행
- */
+/* ==========================================
+   페이지가 열리자마자 실행
+   ========================================== */
+
 updateCountdown();
 
 
-/*
- * 1초마다 업데이트
- */
+/* ==========================================
+   1초마다 업데이트
+   ========================================== */
+
 setInterval(updateCountdown, 1000);
 
 </script>
